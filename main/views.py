@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404,redirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from .models import Category, Product
 import random
 from decimal import Decimal
@@ -6,6 +7,24 @@ from .forms import CategoryFilterForm
 
 def home_view(request):
     return render(request, 'main/index.html')
+
+
+class products_list(ListView):
+    queryset = Product.objects.all()
+    template_name = 'index.html'
+    context_object_name = 'products'
+
+class productsdetail_view(DetailView):
+    queryset = Product.objects.all()
+    template_name = 'product_detail.html'
+    context_object_name = 'products'
+
+class productsupdate_view(UpdateView):
+    pass
+
+
+
+
 
 def products_view(request):
     categories = Category.objects.all()
