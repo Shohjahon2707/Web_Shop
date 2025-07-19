@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Shop | Товары</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    header, footer {
+      background: #24292e;
+      color: #fff;
+      padding: 1.2em 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    nav a {
+      margin: 0 1.2em;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    .category {
+      padding: 1.5em;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin: 1.5em auto;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+
+    .category strong {
+      font-size: 1.1em;
+      margin-right: 0.7em;
+      color: #444;
+    }
+
+    .category select {
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      border: 1.5px solid #ddd;
+      font-size: 1em;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+
+    .category select:hover,
+    .category select:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .products {
+      max-width: 1200px;
+      margin: 0 auto 3em;
+      padding: 0 1em;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5em;
+    }
+
+    .product {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      padding: 1.2em;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+      height: 100%;
+    }
+
+    .product:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+
+    /* Картинки фиксированного размера с обрезкой */
+    .product img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1em;
+      background: #fafafa;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .product:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Отдельный блок для названия, фиксированной высоты, чтобы выравнивать */
+    .product .title-block {
+      min-height: 3.2em; /* чуть больше, чтобы текст не резался */
+      margin-bottom: 0.6em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .product h3 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #222;
+      line-height: 1.6em;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product h3 a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.3s ease;
+      display: block;
+      width: 100%;
+    }
+
+    .product h3 a:hover {
+      color: #007bff;
+    }
+
+    .product p {
+      font-weight: 700;
+      font-size: 1.1em;
+      color: #007bff;
+      margin: 0.5em 0 0;
+    }
+
+    footer {
+      font-size: 0.9em;
+      letter-spacing: 0.05em;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      .products {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Shop</h1>
+    <nav>
+      <a href="{% url 'home' %}">Главная</a>
+      <a href="{% url 'products' %}">Товары</a>
+    </nav>
+  </header>
+
+  <section class="category">
+    <strong>Категория:</strong>
+    <select onchange="location = this.value;">
+      <option value="{% url 'products' %}">Все товары</option>
+      {% for category in categories %}
+        <option value="{% url 'products' %}?category={{ category.name }}" {% if request.GET.category == category.name %}selected{% endif %}>{{ category.name }}</option>
+      {% endfor %}
+    </select>
+  </section>
+
+  <section class="products">
+    {% for product in products %}
+      <div class="product" onclick="window.location='{% url 'product_detail' product.pk %}'">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" />
+        {% else %}
+          <img src="https://via.placeholder.com/220x160?text=No+Image" alt="No Image" />
+        {% endif %}
+        <div class="title-block">
+          <h3><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h3>
+        </div>
+        <p>{{ product.price }} UZS</p>
+      </div>
+    {% empty %}
+      <p style="grid-column: 1 / -1; text-align:center; font-size:1.2em; color:#666;">Товары не найдены.</p>
+    {% endfor %}
+  </section>
+
+  <footer>
+    &copy; 2025 My Shop. Все права защищены.
+  </footer>
+</body>
+</html>

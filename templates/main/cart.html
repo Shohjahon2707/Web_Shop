@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Корзина покупок</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2em;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1em;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 1em;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f4f4f4;
+    }
+
+    .total, .discount, .final {
+      font-weight: bold;
+      background-color: #e9ecef;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6em 1.2em;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.95em;
+      margin-top: 0.5em;
+      transition: background 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    .danger {
+      background: #dc3545;
+    }
+
+    .danger:hover {
+      background: #c82333;
+    }
+
+    .info {
+      color: green;
+      font-weight: bold;
+      margin-top: 1em;
+      text-align: center;
+    }
+
+    .footer-actions {
+      text-align: center;
+      margin-top: 1.5em;
+    }
+
+    .empty {
+      text-align: center;
+      margin-top: 2em;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛒 Ваша корзина</h1>
+
+  {% if products %}
+    <table>
+      <tr>
+        <th>Товар</th>
+        <th>Цена</th>
+        <th>Кол-во</th>
+        <th>Сумма</th>
+        <th>Действие</th>
+      </tr>
+      {% for product in products %}
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.price }} UZS</td>
+        <td>{{ product.quantity }}</td>
+        <td>{{ product.total_price }} UZS</td>
+        <td>
+          <a class="btn danger" href="{% url 'remove_from_cart' product.pk %}">Удалить</a>
+        </td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="3" class="total">Общая сумма</td>
+        <td colspan="2">{{ total }} UZS</td>
+      </tr>
+
+      {% if discount_percent %}
+      <tr>
+        <td colspan="3" class="discount">Скидка ({{ discount_percent }}%)</td>
+        <td colspan="2">- {{ discount_amount|floatformat:2 }} UZS</td>
+      </tr>
+      <tr>
+        <td colspan="3" class="final">Итого со скидкой</td>
+        <td colspan="2">{{ final_total|floatformat:2 }} UZS</td>
+      </tr>
+      {% endif %}
+    </table>
+
+    <div class="footer-actions">
+      <a class="btn" href="{% url 'apply_discount' %}">🎲 Получить случайную скидку</a>
+      <a class="btn" href="{% url 'products' %}">← Продолжить покупки</a>
+    </div>
+
+    {% if you_get_paid %}
+      <p class="info">😄 Мы вам должны {{ discount_percent|add:"-100" }}% от стоимости товара!</p>
+    {% endif %}
+
+  {% else %}
+    <p class="empty">Ваша корзина пуста.</p>
+    <div class="footer-actions">
+      <a class="btn" href="{% url 'products' %}">← Смотреть товары</a>
+    </div>
+  {% endif %}
+</body>
+</html>

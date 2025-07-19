@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Shop | Home</title>
+  <style>
+    body { font-family: Arial; margin: 0; }
+    header, footer { background: #333; color: white; padding: 1em; text-align: center; }
+    nav a { margin: 0 1em; color: white; text-decoration: none; }
+    .hero { padding: 2em; text-align: center; background: #eee; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Shop</h1>
+    <nav>
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'products' %}">Products</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Welcome to My Shop!</h2>
+    <p>Find the best products at the best prices.</p>
+  </section>
+
+  <footer>
+    &copy; 2025 My Shop. All rights reserved.
+  </footer>
+</body>
+</html>
